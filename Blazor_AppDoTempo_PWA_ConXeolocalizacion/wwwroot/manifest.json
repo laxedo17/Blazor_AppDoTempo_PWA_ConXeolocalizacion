@@ -1,0 +1,19 @@
+{
+  "lang": "en",
+  "name": "Prevision do tempo a 5 dias",
+  "short_name": "Tempo",
+  "display": "standalone",
+  "start_url": "./",
+  "background_color": "#ffa500",
+  "theme_color": "transparent",
+  "description": "Simple aplicacion sobre a prevision do tempo a 5 dias.",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "images/Sun-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
+

@@ -1,0 +1,64 @@
+﻿@page "/"
+@using Blazor_AppDoTempo_PWA_ConXeolocalizacion.Models
+@using System.Text
+@inject HttpClient Http
+@inject IJSRuntime js
+
+@if (prevision == null)
+{
+    <p><em>@mensaxe</em></p>
+}
+else
+{
+    <div class="card-group">
+        @foreach (var elemento in prevision.Daily.Take(5))
+        {
+            <DailyForecast Seconds="@elemento.Dt" LowTemp="@elemento.Temp.Min" HighTemp="@elemento.Temp.Max"
+        Description="@elemento.Weather[0].Description" Icon="@elemento.Weather[0].Icon" />
+        }
+    </div>
+}
+
+
+@code {
+
+    OpenWeather prevision;
+    string mensaxe = "Cargando...";
+    Position pos;
+
+    private async Task GetPrevision()
+    {
+        string APIKey = "dee22ddba0313fdca3295fb1a22331a8";
+        StringBuilder url = new StringBuilder();
+        url.Append("https://api.openweathermap.org");
+        url.Append("/data/2.5/onecall?");
+        url.Append("lat=");
+        url.Append(pos.Latitude);
+        url.Append("&lon=");
+        url.Append(pos.Longitude);
+        url.Append("&exclude=");
+        url.Append("current,minutely,hourly,alerts");
+        url.Append("&units=metric");
+        url.Append("&appid=");
+        url.Append(APIKey);
+        prevision = await Http.GetFromJsonAsync<OpenWeather>(url.ToString());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetPosition();
+            await GetPrevision();
+        }
+        catch (Exception)
+        {
+            mensaxe = "Error atopado ou a xeolocalizacion non esta soportada";
+        }
+    }
+
+    private async Task GetPosition()
+    {
+        pos = await js.InvokeAsync<Position>("blazorwebassemblyInterop.getPosition");
+    }
+}
